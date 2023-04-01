@@ -1,7 +1,0 @@
-﻿  Compiling CUDA source file tarfg.cu...
-  
-  D:\AndrejBackup\Programming\Andrej123456789\tarfg>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.35.32215\bin\HostX64\x64" -x cu   -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include" -I"C:\src\vcpkg\installed\x64-windows\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.1\include"  -G   --keep-dir x64\Debug  -maxrregcount=0   --machine 64 --compile -cudart static -std=c++20 -Xcompiler "/std:c++20" -g  -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /FS /Zi /RTC1 /MDd " -Xcompiler "/Fdx64\Debug\vc143.pdb" -o D:\AndrejBackup\Programming\Andrej123456789\tarfg\x64\Debug\tarfg.cu.obj "D:\AndrejBackup\Programming\Andrej123456789\tarfg\tarfg.cu" 
-  tarfg.cu
-  tmpxft_0000432c_00000000-7_tarfg.cudafe1.cpp
-D:\AndrejBackup\Programming\Andrej123456789\tarfg\tarfg.cu(173): warning C4267: '-=': conversion from 'size_t' to 'int', possible loss of data
-  tarfg.vcxproj -> D:\AndrejBackup\Programming\Andrej123456789\tarfg\x64\Debug\tarfg.exe
