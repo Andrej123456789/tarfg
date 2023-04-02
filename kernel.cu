@@ -35,6 +35,42 @@ void split_str(std::string const& str, const char delim, std::vector<std::string
     }
 }
 
+void tar(const char* name, short save, std::vector<std::string>& FILES)
+{
+    mtar_t tar;
+
+    /* Open archive for writing */
+    mtar_open(&tar, name, "w");
+
+    for (auto &i : FILES)
+    {
+        std::fstream file;
+	    file.open(i, std::ios::in);
+
+        std::string str;
+		std::string content;
+        while (std::getline(file, str))
+        {
+			/* ingore this - 5350 - U */
+			content += str;
+
+			if (save == 0) /* do not save few bytes for new line */
+			{
+				content += "\n";
+			}
+        }
+
+        mtar_write_file_header(&tar, i.c_str(), content.size());
+        mtar_write_data(&tar, content.c_str(), content.size());
+    }
+
+    /* Finalize -- this needs to be the last thing done before closing */
+    mtar_finalize(&tar);
+
+    /* Close archive */
+    mtar_close(&tar);
+}
+
 void untar(const char* path)
 {
     mtar_t tar;
@@ -103,11 +139,27 @@ again:
 
         else if (command == "tar")
         {
-            if (arguments.size() < 2)
+            if (arguments.size() < 3)
             {
                 std::cout << "Not enough arguments!\n";
                 goto again;
             }
+
+            std::vector<std::string> FILES;
+            for (size_t i = 0; i < arguments.size(); i++)
+            {
+                if (i < 3)
+                {
+                    continue;
+                }
+
+                else
+                {
+                    FILES.push_back(arguments[i]);
+                }
+            }
+
+            tar(arguments[1].c_str(), std::stoi(arguments[2]), FILES);
         }
 
         else if (command == "untar")
