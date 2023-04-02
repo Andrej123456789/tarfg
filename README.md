@@ -11,10 +11,9 @@
     -   [ ] store folders
 -   [ ] Tar
     -   [x] untar .tar file
-    -   [ ] tar .tar file
+    -   [x] tar .tar file
 -   [ ] Other stuff
     -   [ ] multi platform
-    -   [x] when untaring .tar file, skip part where program writes to actual disk
 
 ## Compile & Run
 

@@ -83,13 +83,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="disk.cu" />
-    <CudaCompile Include="tarfg.cu" />
     <CudaCompile Include="kernel.cu" />
     <CudaCompile Include="test.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\disk.h" />
     <ClInclude Include="headers\tarfg.h" />
+    <ClInclude Include="microtar\microtar.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="microtar\microtar.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

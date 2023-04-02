@@ -37,42 +37,76 @@ void split_str(std::string const& str, const char delim, std::vector<std::string
 
 void tar(const char* name, short save, std::vector<std::string>& FILES)
 {
+    int error = 0;
     mtar_t tar;
 
     /* Open archive for writing */
-    mtar_open(&tar, name, "w");
+    error = mtar_open(&tar, name, "w");
+
+    if (error < 0)
+    {
+        printf("%s\n", mtar_strerror(error));
+    }
 
     for (auto &i : FILES)
     {
         std::fstream file;
-	    file.open(i, std::ios::in);
+        file.open(i, std::ios::in);
 
-        std::string str;
-		std::string content;
-        while (std::getline(file, str))
+        if (!file)
         {
-			/* ingore this - 5350 - U */
-			content += str;
-
-			if (save == 0) /* do not save few bytes for new line */
-			{
-				content += "\n";
-			}
+            std::cout << "File " << i << " not found!\n";
+            break;
         }
 
-        mtar_write_file_header(&tar, i.c_str(), content.size());
-        mtar_write_data(&tar, content.c_str(), content.size());
+        std::string str;
+        std::string content;
+        while (std::getline(file, str))
+        {
+            content += str;
+
+            if (save == 0) /* do not save few bytes for new line */
+            {
+                content += "\n";
+            }
+        }
+
+        error = mtar_write_file_header(&tar, i.c_str(), content.size());
+
+        if (error < 0)
+        {
+            printf("%s\n", mtar_strerror(error));
+        }
+
+        error = mtar_write_data(&tar, content.c_str(), content.size());
+
+        if (error < 0)
+        {
+            printf("%s\n", mtar_strerror(error));
+        }
     }
 
     /* Finalize -- this needs to be the last thing done before closing */
-    mtar_finalize(&tar);
+    error = mtar_finalize(&tar);
+
+    if (error < 0)
+    {
+        printf("%s\n", mtar_strerror(error));
+    }
 
     /* Close archive */
-    mtar_close(&tar);
+    error = mtar_close(&tar);
+
+    if (error < 0)
+    {
+        printf("%s\n", mtar_strerror(error));
+    }
 }
 
 void untar(const char* path)
 {
+    int error = 0;
+
     mtar_t tar;
     mtar_header_t h;
     char *p;
@@ -80,7 +114,13 @@ void untar(const char* path)
     std::vector<std::string> FILES;
 
     /* Open archive for reading */
-    mtar_open(&tar, path, "r");
+    error = mtar_open(&tar, path, "r");
+
+    if (error < 0)
+    {
+        printf("%s\n", mtar_strerror(error));
+        return;
+    }
 
     /* Print a string */
     printf("Extracting from %s\n", path);
@@ -91,15 +131,40 @@ void untar(const char* path)
         printf("\t %s (%d bytes)\n", h.name, h.size);
         FILES.push_back(std::string(h.name));
 
-        mtar_next(&tar);
+        error = mtar_next(&tar);
+
+        if (error < 0)
+        {
+            printf("%s\n", mtar_strerror(error));
+            return;
+        }
     }
 
     for (auto &i : FILES)
     {
         /* Load and save content of found files */
-        mtar_find(&tar, i.c_str(), &h);
+        error = mtar_find(&tar, i.c_str(), &h);
+
+        if (error < 0)
+        {
+            printf("%s\n", mtar_strerror(error));
+            return;
+        }
+
         p = (char*)calloc(1, h.size + 1);
-        mtar_read_data(&tar, p, h.size);
+
+        if (p == NULL)
+        {
+            printf("Error while trying to allocate space!\n");
+            return;
+        }
+
+        error = mtar_read_data(&tar, p, h.size);
+
+        if (error < 0)
+        {
+            printf("%s\n", mtar_strerror(error));
+        }
         
         add_file(i, std::string(p));
     }
@@ -139,7 +204,7 @@ again:
 
         else if (command == "tar")
         {
-            if (arguments.size() < 3)
+            if (arguments.size() < 4)
             {
                 std::cout << "Not enough arguments!\n";
                 goto again;

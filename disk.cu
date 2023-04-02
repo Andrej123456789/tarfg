@@ -83,7 +83,6 @@ int add_file_from_disk(std::string path, short save)
 		std::string content;
         while (std::getline(file, str))
         {
-			/* ingore this - 5350 - U */
 			content += str;
 
 			if (save == 0) /* do not save few bytes for new line */

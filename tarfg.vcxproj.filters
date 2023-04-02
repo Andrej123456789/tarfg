@@ -3,12 +3,14 @@
   <ItemGroup>
     <CudaCompile Include="kernel.cu" />
     <CudaCompile Include="test.cu" />
-    <CudaCompile Include="tarfg.cu" />
     <CudaCompile Include="disk.cu" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="headers">
       <UniqueIdentifier>{34d6ac5c-f6a7-4bf7-81b9-7c7ed087de5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="microtar">
+      <UniqueIdentifier>{5b58393b-56cb-4cab-8c37-6225c9796895}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -18,5 +20,13 @@
     <ClInclude Include="headers\disk.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="microtar\microtar.h">
+      <Filter>microtar</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="microtar\microtar.c">
+      <Filter>microtar</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

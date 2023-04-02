@@ -3,14 +3,13 @@
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the MIT license. See `microtar.c` for details.
- */
+*/
 
-#ifndef MICROTAR_H
-#define MICROTAR_H
+#pragma once
 
 #ifdef __cplusplus
-extern "C"
-{
+    extern "C"
+    {
 #endif
 
 #include <stdio.h>
@@ -86,7 +85,5 @@ extern "C"
     int mtar_finalize(mtar_t *tar);
 
 #ifdef __cplusplus
-}
-#endif
-
+    }
 #endif
