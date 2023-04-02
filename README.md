@@ -14,9 +14,13 @@
     -   [ ] tar .tar file
 -   [ ] Other stuff
     -   [ ] multi platform
-    -   [ ] when untaring .tar file, skip part where program writes to actual disk
+    -   [x] when untaring .tar file, skip part where program writes to actual disk
 
 ## Compile & Run
 
 1. Install CUDA (see [this](https://www.youtube.com/watch?v=8sDg-lD1fZQ) video)
 2. Open Visual Studio and compile project or use `compile.bat` file
+
+## External dependencies
+
+-   [microtar](https://github.com/rxi/microtar)

@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "headers/tarfg.h"
 #include "headers/disk.h"
+#include "microtar/microtar.h"
 
 void error(int errorc)
 {
@@ -33,6 +33,46 @@ void split_str(std::string const& str, const char delim, std::vector<std::string
     {
         out.push_back(s2); /* store the string in s2 */
     }
+}
+
+void untar(const char* path)
+{
+    mtar_t tar;
+    mtar_header_t h;
+    char *p;
+
+    std::vector<std::string> FILES;
+
+    /* Open archive for reading */
+    mtar_open(&tar, path, "r");
+
+    /* Print a string */
+    printf("Extracting from %s\n", path);
+
+    /* Print all file names and sizes */
+    while ((mtar_read_header(&tar, &h)) != MTAR_ENULLRECORD)
+    {
+        printf("\t %s (%d bytes)\n", h.name, h.size);
+        FILES.push_back(std::string(h.name));
+
+        mtar_next(&tar);
+    }
+
+    for (auto &i : FILES)
+    {
+        /* Load and save content of found files */
+        mtar_find(&tar, i.c_str(), &h);
+        p = (char*)calloc(1, h.size + 1);
+        mtar_read_data(&tar, p, h.size);
+        
+        add_file(i, std::string(p));
+    }
+
+    /* Free the string */
+    free(p);
+
+    /* Close archive */
+    mtar_close(&tar);
 }
 
 void shell()
@@ -78,7 +118,7 @@ again:
                 goto again;
             }
 
-            untar_file(arguments[1].c_str());
+            untar(arguments[1].c_str());
         }
 
         else if (command == "add")
