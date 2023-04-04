@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #include <stdio.h>
@@ -16,19 +15,24 @@
 typedef struct
 {
 	std::string name;
+	std::vector<VFILE> files;
+} VFOLDER;
 
+typedef struct
+{
+	std::string name;
 	std::string content;
-	size_t size;
 } VFILE;
 
-static std::vector<VFILE> DISK;
+static std::vector<VFOLDER> DISK_FOLDERS;
+static std::vector<VFILE> DISK_FILES;
 
-int init_disk();
-int close_disk();
+void init_disk();
+void close_disk();
 
-int add_file(std::string name, std::string content);
-int add_file_from_disk(std::string path, short save);
-int delete_file(std::string name);
+void add_file(std::string name, std::string content);
+void add_file_from_disk(std::string path, short save);
+void delete_file(std::string name);
 
-int edit_file(std::string name, std::string new_content);
-int search_file(std::string name);
+void edit_file(std::string name, std::string new_content);
+void search_file(std::string name);

@@ -3,57 +3,105 @@
 
 #include "headers/disk.h"
 
-std::tuple<bool, size_t> check_existence(std::string name)
+void init_disk()
 {
-	bool state = false;
-	size_t position = 0;
-	for (size_t i = 0; i < DISK.size(); i++)
-	{
-		if (DISK.at(i).name == name)
-		{
-			state = true;
-			position = i;
+	return;
+}
 
-			break;
+void close_disk()
+{
+	DISK_FOLDERS.clear();
+	DISK_FILES.clear();
+}
+
+void add_file(std::string name, std::string content)
+{
+	bool make_file_in_existing_folder = false;
+	size_t pos_i, pos_j = 0;
+
+	std::string file;
+	std::string folder;
+
+	size_t pos = name.find('/');
+	if (pos != std::string::npos)
+	{
+		/* fix a bug (if path contains tow or more slashes)*/
+		folder = name.substr(0, pos);
+		file = name.substr(pos + 1, name.size() - 1);
+	}
+
+	else
+	{
+		file = name;
+	}
+	
+	if (folder.size() > 0)
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				for (size_t j = 0; j < DISK_FOLDERS.at(i).files.size(); j++)
+				{
+					if (DISK_FOLDERS.at(i).files.at(j).name == file)
+					{
+						std::cout << "File " << file << " already exists!\n";
+						return;
+					}
+
+					make_file_in_existing_folder = true;
+				}
+			}
+
+			pos_i = i;
+		}
+
+		if (make_file_in_existing_folder)
+		{
+			VFILE new_file;
+
+			new_file.name = file;
+			new_file.content = content;
+
+			DISK_FOLDERS.at(pos_i).files.push_back(new_file);
+		}
+
+		else
+		{
+			VFOLDER new_folder;
+			VFILE new_file;
+
+			new_file.name = file;
+			new_file.content = content;
+
+			new_folder.name = folder;
+			new_folder.files.push_back(new_file);
+
+			DISK_FOLDERS.push_back(new_folder);
 		}
 	}
 
-	return {state, position};
-}
-
-int init_disk()
-{
-	return 0;
-}
-
-int close_disk()
-{
-	DISK.clear();
-	return 0;
-}
-
-int add_file(std::string name, std::string content)
-{
-	auto [state, position] = check_existence(name);
-
-	if (state)
+	else
 	{
-		std::cout << "File " << name << " already exists!\n";
-		return 0;
+		for (size_t i = 0; i < DISK_FILES.size(); i++)
+		{
+			if (DISK_FILES.at(i).name == file)
+			{
+				std::cout << "File " << file << " already exists!\n";
+				return;
+			}
+		}
+
+		VFILE new_file;
+
+		new_file.name = file;
+		new_file.content = content;
+
+		DISK_FILES.push_back(new_file);
 	}
-
-	VFILE file;
-
-	file.name = name;
-	file.content = content;
-
-	file.size = file.content.size();
-	
-	DISK.push_back(file);
-	return 0;
 }
 
-int add_file_from_disk(std::string path, short save)
+void add_file_from_disk(std::string path, short save)
 {
 	std::fstream file;
 	file.open(path, std::ios::in);
@@ -95,10 +143,9 @@ int add_file_from_disk(std::string path, short save)
     }
 
     file.close();
-	return 0;
 }
 
-int delete_file(std::string name)
+void delete_file(std::string name)
 {
 	auto [state, position] = check_existence(name);
 
@@ -111,11 +158,9 @@ int delete_file(std::string name)
 	{
 		std::cout << "File " << name << " not found!\n";
 	}
-
-	return 0;
 }
 
-int edit_file(std::string name, std::string new_content)
+void edit_file(std::string name, std::string new_content)
 {
 	auto [state, position] = check_existence(name);
 
