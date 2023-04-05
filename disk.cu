@@ -12,12 +12,14 @@ void close_disk()
 {
 	DISK_FOLDERS.clear();
 	DISK_FILES.clear();
+
+	return;
 }
 
 void add_file(std::string name, std::string content)
 {
 	bool make_file_in_existing_folder = false;
-	size_t pos_i, pos_j = 0;
+	size_t pos_i = 0;
 
 	std::string file;
 	std::string folder;
@@ -35,7 +37,7 @@ void add_file(std::string name, std::string content)
 		file = name;
 	}
 	
-	if (folder.size() > 0)
+	if (folder.size() > 0 && file.size() > 0) /* folder and file in name */
 	{
 		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
 		{
@@ -56,8 +58,17 @@ void add_file(std::string name, std::string content)
 			pos_i = i;
 		}
 
-		if (make_file_in_existing_folder)
+		if (make_file_in_existing_folder) /* folder exists, but not a file */
 		{
+			for (size_t i = 0; i < DISK_FILES.size(); i++)
+			{
+				if (DISK_FILES.at(i).name == file)
+				{
+					std::cout << "File " << file << " already exists!\n";
+					return;
+				}
+			}
+
 			VFILE new_file;
 
 			new_file.name = file;
@@ -66,7 +77,7 @@ void add_file(std::string name, std::string content)
 			DISK_FOLDERS.at(pos_i).files.push_back(new_file);
 		}
 
-		else
+		else /* neither folder nor file exist */
 		{
 			VFOLDER new_folder;
 			VFILE new_file;
@@ -81,7 +92,24 @@ void add_file(std::string name, std::string content)
 		}
 	}
 
-	else
+	else if (folder.size() > 0 && file.size() == 0) /* folder in name */
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				std::cout << "Folder " << folder << " already exists!\n";
+				return;
+			}
+
+			VFOLDER new_folder;
+
+			new_folder.name = folder;
+			DISK_FOLDERS.push_back(new_folder);
+		}
+	}
+
+	else if (folder.size() == 0 && file.size() > 0) /* file in name */
 	{
 		for (size_t i = 0; i < DISK_FILES.size(); i++)
 		{
@@ -98,6 +126,12 @@ void add_file(std::string name, std::string content)
 		new_file.content = content;
 
 		DISK_FILES.push_back(new_file);
+	}
+
+	else /* nothing */
+	{
+		std::cout << "Please enter name of new folder/file!\n";
+		return;
 	}
 }
 
@@ -147,55 +181,86 @@ void add_file_from_disk(std::string path, short save)
 
 void delete_file(std::string name)
 {
-	auto [state, position] = check_existence(name);
+	std::string file;
+	std::string folder;
 
-	if (state)
+	size_t pos = name.find('/');
+	if (pos != std::string::npos)
 	{
-		DISK.erase(DISK.begin() + position);
+		/* fix a bug (if path contains tow or more slashes)*/
+		folder = name.substr(0, pos);
+		file = name.substr(pos + 1, name.size() - 1);
 	}
 
 	else
 	{
-		std::cout << "File " << name << " not found!\n";
+		file = name;
+	}
+	
+	if (folder.size() > 0 && file.size() > 0) /* folder and file in name */
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				for (size_t j = 0; j < DISK_FOLDERS.at(i).files.size(); j++)
+				{
+					if (DISK_FOLDERS.at(i).files.at(j).name == file)
+					{
+						DISK_FOLDERS.at(i).files.erase(DISK_FOLDERS.at(i).files.begin() + j);
+						return;
+					}
+				}
+			}
+		}
+
+		std::cout << "File " << file << " or folder " << folder << " do not exist and therefore cannot be deleted unless you have PhD in quantum information theory!\n";
+		return;
+	}
+
+	else if (folder.size() > 0 && file.size() == 0) /* folder in the name */
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				DISK_FOLDERS.erase(DISK_FOLDERS.begin() + i);
+				return;
+			}
+		}
+
+		std::cout << "Folder " << folder << " does not exist and therefore cannot be deleted unless you have PhD in quantum information theory!\n";
+		return;
+	}
+
+	else if (folder.size() == 0 && file.size() > 0) /* file in the name */
+	{
+		for (size_t i = 0; i < DISK_FILES.size(); i++)
+		{
+			if (DISK_FILES.at(i).name == file)
+			{
+				DISK_FILES.erase(DISK_FILES.begin() + i);
+				return;
+			}
+		}
+
+		std::cout << "File " << file << " does not exist and therefore cannot be deleted unless you have PhD in quantum information theory!\n";
+		return;
+	}
+
+	else /* nothing */
+	{
+		std::cout << "Please enter name of new folder/file!\n";
+		return;
 	}
 }
 
 void edit_file(std::string name, std::string new_content)
 {
-	auto [state, position] = check_existence(name);
-
-	if (state)
-	{
-		DISK.at(position).content = new_content;
-	}	
-
-	else
-	{
-		std::cout << "File " << name << " not found!\n";
-		std::cout << "Creating new file...\n";
-
-		add_file(name, new_content);
-	}
-
-	return 0;
+	return;
 }
 
-int search_file(std::string name)
+void search_file(std::string name)
 {
-	auto [state, position] = check_existence(name);
-
-	if (state)
-	{
-		auto file = DISK.at(position);
-
-		std::cout << file.name << '\n';
-		std::cout << '\t' << file.content << '\n';
-	}
-
-	else
-	{
-		std::cout << "File " << name << " not found!\n";
-	}
-
-	return 0;
+	return;
 }

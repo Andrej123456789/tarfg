@@ -277,7 +277,7 @@ again:
 
         else if (command == "delete")
         {
-            if (arguments.size() < 3)
+            if (arguments.size() < 2)
             {
                 std::cout << "Not enough arguments!\n";
                 goto again;

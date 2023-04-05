@@ -15,14 +15,14 @@
 typedef struct
 {
 	std::string name;
-	std::vector<VFILE> files;
-} VFOLDER;
+	std::string content;
+} VFILE;
 
 typedef struct
 {
 	std::string name;
-	std::string content;
-} VFILE;
+	std::vector<VFILE> files;
+} VFOLDER;
 
 static std::vector<VFOLDER> DISK_FOLDERS;
 static std::vector<VFILE> DISK_FILES;
