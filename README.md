@@ -2,6 +2,9 @@
 
 "File system" built around [Tar](https://wiki.osdev.org/Tar) which runs on GPU RAM (Nvidia GPUs for now)
 
+![image](program.png)
+**Demo of tarfg**
+
 ## TODO:
 
 -   [ ] GPU
