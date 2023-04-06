@@ -11,7 +11,7 @@
     -   [ ] run on GPU RAM
 -   [ ] DISK
     -   [x] store files
-    -   [ ] store folders
+    -   [x] store folders
 -   [ ] Tar
     -   [x] untar .tar file
     -   [x] tar .tar file
