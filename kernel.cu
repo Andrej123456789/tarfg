@@ -316,7 +316,7 @@ again:
         {
             if (arguments.size() < 2)
             {
-                std::cout << "Not enough arguments!\n";
+                search_file("");
                 goto again;
             }
 

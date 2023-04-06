@@ -257,10 +257,119 @@ void delete_file(std::string name)
 
 void edit_file(std::string name, std::string new_content)
 {
-	return;
+	delete_file(name);
+	add_file(name, new_content);
 }
 
 void search_file(std::string name)
 {
-	return;
+	bool make_file_in_existing_folder = false;
+	size_t pos_i = 0;
+
+	std::string file;
+	std::string folder;
+
+	size_t pos = name.find('/');
+	if (pos != std::string::npos)
+	{
+		/* fix a bug (if path contains tow or more slashes)*/
+		folder = name.substr(0, pos);
+		file = name.substr(pos + 1, name.size() - 1);
+	}
+
+	else
+	{
+		file = name;
+	}
+	
+	if (folder.size() > 0 && file.size() > 0) /* folder and file in name */
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				for (size_t j = 0; j < DISK_FOLDERS.at(i).files.size(); j++)
+				{
+					if (DISK_FOLDERS.at(i).files.at(j).name == file)
+					{
+						std::cout << DISK_FOLDERS.at(i).files.at(j).name << "\n";
+						std::cout << '\t' << DISK_FOLDERS.at(i).files.at(j).content << "\n";
+						return;
+					}
+
+					make_file_in_existing_folder = true;
+				}
+			}
+
+			pos_i = i;
+		}
+
+		if (make_file_in_existing_folder) /* folder exists, but not a file */
+		{
+			std::cout << DISK_FOLDERS.at(pos_i).name << "\n";
+
+			for (auto &i : DISK_FOLDERS.at(pos_i).files)
+			{
+				std::cout << '\t' << i.name << "\n";
+				std::cout << "\t\t" << i.content << "\n";
+			}
+		}
+
+		else /* neither folder nor file exist */
+		{
+			std::cout << "File " << file << " or folder " << folder << " not found!\n";
+			return;
+		}
+	}
+
+	else if (folder.size() > 0 && file.size() == 0) /* folder in name */
+	{
+		for (size_t i = 0; i < DISK_FOLDERS.size(); i++)
+		{
+			if (DISK_FOLDERS.at(i).name == folder)
+			{
+				std::cout << DISK_FOLDERS.at(pos_i).name << "\n";
+
+				for (auto &i : DISK_FOLDERS.at(i).files)
+				{
+					std::cout << '\t' << i.name << "\n";
+					std::cout << "\t\t" << i.content << "\n";
+				}
+			}
+		}
+	}
+
+	else if (folder.size() == 0 && file.size() > 0) /* file in name */
+	{
+		for (size_t i = 0; i < DISK_FILES.size(); i++)
+		{
+			if (DISK_FILES.at(i).name == file)
+			{
+				std::cout << file << '\n';
+				std::cout << '\t' << DISK_FILES.at(i).content << '\n';
+			}
+		}
+	}
+
+	else /* nothing */
+	{
+		std::cout << " -------------- FOLDERS -------------- \n";
+		for (auto &i : DISK_FOLDERS)
+		{
+			std::cout << i.name << "\n";
+
+			for (auto &x : i.files)
+			{
+				std::cout << '\t' << x.name << "\n";
+				std::cout << "\t\t" << x.content << "\n";
+			}
+		}
+
+		std::cout << " -------------- FILES -------------- \n";
+		for (auto &j : DISK_FILES)
+		{
+			std::cout << j.name << '\n';
+			std::cout << '\t' << j.content << '\n';
+		}
+	}
 }
