@@ -9,10 +9,10 @@
 
 -   [ ] GPU
     -   [ ] run on GPU RAM
--   [ ] DISK
+-   [x] DISK
     -   [x] store files
     -   [x] store folders
--   [ ] Tar
+-   [x] Tar
     -   [x] untar .tar file
     -   [x] tar .tar file
 -   [ ] Other stuff
