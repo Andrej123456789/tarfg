@@ -1,3 +1,5 @@
+**PROJECT IS DONE**
+
 # tarfg
 
 "File system" built around [Tar](https://wiki.osdev.org/Tar) which runs on GPU RAM (Nvidia GPUs for now)
